@@ -66,6 +66,14 @@ struct TaskTwoFramesEqualityPythonVisitor
                       bp::make_function(
                           &TaskTwoFramesEqualityPythonVisitor::Kd,
                           bp::return_value_policy<bp::copy_const_reference>()))
+        .add_property("anchor_f1",
+                      bp::make_function(
+                          &TaskTwoFramesEqualityPythonVisitor::anchor_f1,
+                          bp::return_value_policy<bp::copy_const_reference>()))
+        .add_property("anchor_f2",
+                      bp::make_function(
+                          &TaskTwoFramesEqualityPythonVisitor::anchor_f2,
+                          bp::return_value_policy<bp::copy_const_reference>()))
         .def("setKp", &TaskTwoFramesEqualityPythonVisitor::setKp, bp::arg("Kp"))
         .def("setKd", &TaskTwoFramesEqualityPythonVisitor::setKd, bp::arg("Kd"))
         .add_property("mask",
@@ -117,6 +125,9 @@ struct TaskTwoFramesEqualityPythonVisitor
     return self.velocity_error();
   }
   static const Eigen::VectorXd& Kp(TaskFrames& self) { return self.Kp(); }
+  static const Eigen::VectorXd& Kd(TaskFrames& self) { return self.Kd(); }
+  static const Eigen::VectorXd& anchor_f1(TaskFrames& self) { return self.anchor2f1(); }
+  static const Eigen::VectorXd& anchor_f2(TaskFrames& self) { return self.anchor2f2(); }
   static const Eigen::VectorXd& Kd(TaskFrames& self) { return self.Kd(); }
   static void setKp(TaskFrames& self, const ::Eigen::VectorXd Kp) {
     return self.Kp(Kp);
