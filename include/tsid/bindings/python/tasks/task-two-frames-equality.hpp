@@ -36,10 +36,16 @@ struct TaskTwoFramesEqualityPythonVisitor
   template <class PyClass>
 
   void visit(PyClass& cl) const {
-    cl.def(bp::init<std::string, robots::RobotWrapper&, std::string,
-                    std::string>((bp::arg("name"), bp::arg("robot"),
+    cl.def(bp::init<std::string, robots::RobotWrapper&, std::string, std::string>((
+                                  bp::arg("name"), bp::arg("robot"),
                                   bp::arg("framename1"), bp::arg("framename2")),
                                  "Default Constructor"))
+        .def(bp::init<std::string, robots::RobotWrapper&, std::string,
+                    std::string, pinocchio::SE3, pinocchio::SE3>(
+                                 (bp::arg("name"), bp::arg("robot"),
+                                  bp::arg("framename1"), bp::arg("framename2"), 
+                                  bp::arg("anchor_f1"), bp::arg("anchor_f2")),
+                                 "Full constructor, with anchor (reference) frames"))
         .add_property("dim", &TaskFrames::dim, "return dimension size")
         .add_property(
             "getDesiredAcceleration",
@@ -126,9 +132,8 @@ struct TaskTwoFramesEqualityPythonVisitor
   }
   static const Eigen::VectorXd& Kp(TaskFrames& self) { return self.Kp(); }
   static const Eigen::VectorXd& Kd(TaskFrames& self) { return self.Kd(); }
-  static const Eigen::VectorXd& anchor_f1(TaskFrames& self) { return self.anchor2f1(); }
-  static const Eigen::VectorXd& anchor_f2(TaskFrames& self) { return self.anchor2f2(); }
-  static const Eigen::VectorXd& Kd(TaskFrames& self) { return self.Kd(); }
+  static const pinocchio::SE3& anchor_f1(TaskFrames& self) { return self.anchor_f1(); }
+  static const pinocchio::SE3& anchor_f2(TaskFrames& self) { return self.anchor_f2(); }
   static void setKp(TaskFrames& self, const ::Eigen::VectorXd Kp) {
     return self.Kp(Kp);
   }

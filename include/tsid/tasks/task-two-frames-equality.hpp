@@ -48,8 +48,8 @@ class TaskTwoFramesEquality : public TaskMotion {
   TaskTwoFramesEquality(const std::string& name, RobotWrapper& robot,
                         const std::string& frameName1,
                         const std::string& frameName2,
-                        const SE3& anchor2f1,
-                        const SE3& anchor2f2);
+                        const SE3& anchor_f1,
+                        const SE3& anchor_f2);
 
   int dim() const;
 
@@ -87,8 +87,8 @@ class TaskTwoFramesEquality : public TaskMotion {
   /** Return the position of anchor frames, i.e. w.r.t. which computation is made in
    * the first and the second body
    */
-  const SE3& anchor2f1() const;
-  const SE3& anchor2f2() const;
+  const SE3& anchor_f1() const;
+  const SE3& anchor_f2() const;
   
   const Vector& Kp() const;
   const Vector& Kd() const;
@@ -112,8 +112,8 @@ class TaskTwoFramesEquality : public TaskMotion {
   std::string m_frame_name2;
   Index m_frame_id1;
   Index m_frame_id2;
-  SE3 m_anchor2f1;
-  SE3 m_anchor2f2;
+  SE3 m_anchor_f1;
+  SE3 m_anchor_f2;
   Motion m_p_error, m_v_error;
   Vector m_p_error_vec, m_v_error_vec;
   Vector m_p_error_masked_vec, m_v_error_masked_vec;
