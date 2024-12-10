@@ -29,10 +29,19 @@ using namespace pinocchio;
 TaskTwoFramesEquality::TaskTwoFramesEquality(const std::string& name,
                                              RobotWrapper& robot,
                                              const std::string& frameName1,
-                                             const std::string& frameName2)
+                                             const std::string& frameName2): 
+                                             TaskTwoFramesEquality(name, robot, frameName1, frameName2, SE3::Identity(), SE3::Identity()) {}
+TaskTwoFramesEquality::TaskTwoFramesEquality(const std::string& name,
+                                             RobotWrapper& robot,
+                                             const std::string& frameName1,
+                                             const std::string& frameName2,
+                                             const SE3& anchor2f1,
+                                             const SE3& anchor2f2)
     : TaskMotion(name, robot),
       m_frame_name1(frameName1),
       m_frame_name2(frameName2),
+      m_anchor2f1(anchor2f1),
+      m_anchor2f2(anchor2f2),
       m_constraint(name, 6, robot.nv()) {
   assert(m_robot.model().existFrame(frameName1));
   assert(m_robot.model().existFrame(frameName2));
@@ -88,6 +97,11 @@ void TaskTwoFramesEquality::Kd(ConstRefVector Kd) {
   m_Kd = Kd;
 }
 
+
+const SE3& TaskTwoFramesEquality::anchor2f1() const {return m_anchor2f1;}
+
+const SE3& TaskTwoFramesEquality::anchor2f2() const {return m_anchor2f2;}
+
 const Vector& TaskTwoFramesEquality::position_error() const {
   return m_p_error_masked_vec;
 }
@@ -122,8 +136,14 @@ const ConstraintBase& TaskTwoFramesEquality::compute(const double,
   SE3 oMi1, oMi2;
   Motion v_frame1, v_frame2;
   Motion m_drift1, m_drift2;
+
+  // Get frame position
   m_robot.framePosition(data, m_frame_id1, oMi1);
   m_robot.framePosition(data, m_frame_id2, oMi2);
+  // Transform both frames to the anchor point, still in the local frame
+  oMi1 = m_anchor2f1.act(oMi1);
+  oMi2 = m_anchor2f2.act(oMi2);
+
   m_robot.frameVelocity(data, m_frame_id1, v_frame1);
   m_robot.frameVelocity(data, m_frame_id2, v_frame2);
   m_robot.frameClassicAcceleration(data, m_frame_id1, m_drift1);
